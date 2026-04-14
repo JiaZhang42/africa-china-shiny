@@ -1,0 +1,1329 @@
+{
+  "app_name": "Africa-China Finance Explorer",
+  "bundle_version": "20260414T071858Z-cdc3216",
+  "source_repo": "JiaZhang42/africa-china",
+  "source_commit": "cdc32164d3e6e8c99f6e85f0170361519f50ea3d",
+  "export_time_utc": "2026-04-14 07:18:58 UTC",
+  "coverage": {
+    "host_scope": "Africa",
+    "year_min": 2000,
+    "year_max": 2023,
+    "host_count": 54,
+    "source_count": 219
+  },
+  "ui_defaults": {
+    "recipe_id": "china_aid_vs_rest_fdi",
+    "scale": "investment",
+    "trim": "none",
+    "moving_average_n": 1,
+    "high_corr_host": false,
+    "exclude_african_sources": true,
+    "require_host_gdp": true,
+    "source_group_preset": "story"
+  },
+  "ui_bounds": {
+    "moving_average_n_min": 1,
+    "moving_average_n_max": 10
+  },
+  "supported_options": {
+    "scales": ["none", "gdp", "investment", "fixed_investment", "govexp"],
+    "trims": ["none", "p99_by_year"],
+    "filters": ["high_corr_host", "exclude_african_sources", "require_host_gdp"],
+    "source_group_presets": {
+      "story": {
+        "China": "CHN",
+        "US + UK + France": ["USA", "GBR", "FRA"],
+        "Other": ["ABW", "AFG", "AGO", "ALB", "AND", "ARE", "ARM", "ASM", "ATG", "AZE", "BDI", "BEN", "BFA", "BGD", "BHR", "BHS", "BIH", "BLR", "BLZ", "BMU", "BOL", "BRB", "BRN", "BTN", "BWA", "CAF", "CHI", "CIV", "CMR", "COD", "COG", "COL", "COM", "CPV", "CRI", "CUB", "CYM", "CYP", "DJI", "DMA", "DOM", "DZA", "ECU", "EGY", "ERI", "EST", "ETH", "FJI", "FSM", "GAB", "GEO", "GHA", "GIB", "GIN", "GMB", "GNB", "GNQ", "GRD", "GTM", "GUM", "GUY", "HKG", "HND", "HRV", "HTI", "IDN", "IND", "IRN", "IRQ", "JAM", "JOR", "KAZ", "KEN", "KGZ", "KHM", "KIR", "KNA", "KWT", "LAO", "LBN", "LBR", "LBY", "LCA", "LIE", "LKA", "LSO", "LTU", "LVA", "MAC", "MAR", "MCO", "MDA", "MDG", "MDV", "MHL", "MKD", "MLI", "MLT", "MMR", "MNE", "MNG", "MOZ", "MRT", "MUS", "MWI", "MYS", "NAM", "NCL", "NER", "NGA", "NIC", "NPL", "OMN", "PAK", "PAN", "PER", "PHL", "PNG", "PRI", "PRK", "PRY", "PSE", "PYF", "QAT", "ROU", "RUS", "RWA", "SAU", "SDN", "SEN", "SGP", "SLB", "SLE", "SLV", "SOM", "SRB", "SSD", "STP", "SUR", "SWZ", "SYC", "SYR", "TCD", "TGO", "THA", "TJK", "TKM", "TLS", "TON", "TTO", "TUN", "TZA", "UGA", "UKR", "URY", "UZB", "VEN", "VIR", "VNM", "VUT", "WSM", "XKX", "YEM", "ZAF", "ZMB", "ZWE"]
+      }
+    },
+    "recipe_catalog": [
+      {
+        "recipe_id": "all_fdi_outflow",
+        "recipe_label": "All source countries using FDI outflows",
+        "component_count": 1,
+        "component_ids": "all_fdi",
+        "datasets": "fdi"
+      },
+      {
+        "recipe_id": "china_aid_vs_rest_fdi",
+        "recipe_label": "China AidData versus non-China FDI",
+        "component_count": 2,
+        "component_ids": "china_aid, rest_fdi",
+        "datasets": "aid, fdi"
+      },
+      {
+        "recipe_id": "all_ids_ppg_bilateral_disbursement",
+        "recipe_label": "All source countries using IDS sovereign bilateral PPG disbursement",
+        "component_count": 1,
+        "component_ids": "all_ids_disbursement",
+        "datasets": "ids"
+      }
+    ],
+    "component_override_catalog": [
+      {
+        "recipe_id": "all_fdi_outflow",
+        "component_id": "all_fdi",
+        "dataset_id": "fdi",
+        "field_name": "measure_id",
+        "field_scope": "component",
+        "default_value": "fdi_outflow",
+        "allowed_values": "fdi_outflow",
+        "allowed_values_raw": "fdi_outflow",
+        "ui_exposed": false,
+        "notes": "Switch to another measure within the same dataset."
+      },
+      {
+        "recipe_id": "all_fdi_outflow",
+        "component_id": "all_fdi",
+        "dataset_id": "fdi",
+        "field_name": "include_source_iso3",
+        "field_scope": "component",
+        "default_value": "NULL",
+        "allowed_values": "character vector of source ISO3 codes or NULL",
+        "allowed_values_raw": null,
+        "ui_exposed": false,
+        "notes": "Keep only these source ISO3 codes in this component."
+      },
+      {
+        "recipe_id": "all_fdi_outflow",
+        "component_id": "all_fdi",
+        "dataset_id": "fdi",
+        "field_name": "exclude_source_iso3",
+        "field_scope": "component",
+        "default_value": "NULL",
+        "allowed_values": "character vector of source ISO3 codes or NULL",
+        "allowed_values_raw": null,
+        "ui_exposed": false,
+        "notes": "Drop these source ISO3 codes from this component."
+      },
+      {
+        "recipe_id": "china_aid_vs_rest_fdi",
+        "component_id": "china_aid",
+        "dataset_id": "aid",
+        "field_name": "measure_id",
+        "field_scope": "component",
+        "default_value": "aid_official_finance",
+        "allowed_values": "aid_official_finance",
+        "allowed_values_raw": "aid_official_finance",
+        "ui_exposed": false,
+        "notes": "Switch to another measure within the same dataset."
+      },
+      {
+        "recipe_id": "china_aid_vs_rest_fdi",
+        "component_id": "china_aid",
+        "dataset_id": "aid",
+        "field_name": "include_source_iso3",
+        "field_scope": "component",
+        "default_value": "CHN",
+        "allowed_values": "character vector of source ISO3 codes or NULL",
+        "allowed_values_raw": null,
+        "ui_exposed": false,
+        "notes": "Keep only these source ISO3 codes in this component."
+      },
+      {
+        "recipe_id": "china_aid_vs_rest_fdi",
+        "component_id": "china_aid",
+        "dataset_id": "aid",
+        "field_name": "exclude_source_iso3",
+        "field_scope": "component",
+        "default_value": "NULL",
+        "allowed_values": "character vector of source ISO3 codes or NULL",
+        "allowed_values_raw": null,
+        "ui_exposed": false,
+        "notes": "Drop these source ISO3 codes from this component."
+      },
+      {
+        "recipe_id": "china_aid_vs_rest_fdi",
+        "component_id": "china_aid",
+        "dataset_id": "aid",
+        "field_name": "spec_id",
+        "field_scope": "dataset_option",
+        "default_value": "loan_grant",
+        "allowed_values": "all_official_flows, loan_grant, loan_oda_oof, loan_only, loan_oof, loan_ppg",
+        "allowed_values_raw": ["all_official_flows", "loan_grant", "loan_oda_oof", "loan_only", "loan_oof", "loan_ppg"],
+        "ui_exposed": true,
+        "notes": "AidData financing spec used in the host-year panel."
+      },
+      {
+        "recipe_id": "china_aid_vs_rest_fdi",
+        "component_id": "china_aid",
+        "dataset_id": "aid",
+        "field_name": "year_basis",
+        "field_scope": "dataset_option",
+        "default_value": "commitment_year",
+        "allowed_values": "commitment_year, implementation_start_year",
+        "allowed_values_raw": ["commitment_year", "implementation_start_year"],
+        "ui_exposed": true,
+        "notes": "AidData timing basis used to assign financing to year."
+      },
+      {
+        "recipe_id": "china_aid_vs_rest_fdi",
+        "component_id": "rest_fdi",
+        "dataset_id": "fdi",
+        "field_name": "measure_id",
+        "field_scope": "component",
+        "default_value": "fdi_outflow",
+        "allowed_values": "fdi_outflow",
+        "allowed_values_raw": "fdi_outflow",
+        "ui_exposed": false,
+        "notes": "Switch to another measure within the same dataset."
+      },
+      {
+        "recipe_id": "china_aid_vs_rest_fdi",
+        "component_id": "rest_fdi",
+        "dataset_id": "fdi",
+        "field_name": "include_source_iso3",
+        "field_scope": "component",
+        "default_value": "NULL",
+        "allowed_values": "character vector of source ISO3 codes or NULL",
+        "allowed_values_raw": null,
+        "ui_exposed": false,
+        "notes": "Keep only these source ISO3 codes in this component."
+      },
+      {
+        "recipe_id": "china_aid_vs_rest_fdi",
+        "component_id": "rest_fdi",
+        "dataset_id": "fdi",
+        "field_name": "exclude_source_iso3",
+        "field_scope": "component",
+        "default_value": "CHN",
+        "allowed_values": "character vector of source ISO3 codes or NULL",
+        "allowed_values_raw": null,
+        "ui_exposed": false,
+        "notes": "Drop these source ISO3 codes from this component."
+      },
+      {
+        "recipe_id": "all_ids_ppg_bilateral_disbursement",
+        "component_id": "all_ids_disbursement",
+        "dataset_id": "ids",
+        "field_name": "measure_id",
+        "field_scope": "component",
+        "default_value": "ids_ppg_bilateral_disbursement",
+        "allowed_values": "ids_ppg_bilateral_concessional_disbursement, ids_ppg_bilateral_disbursement",
+        "allowed_values_raw": ["ids_ppg_bilateral_concessional_disbursement", "ids_ppg_bilateral_disbursement"],
+        "ui_exposed": true,
+        "notes": "Switch to another measure within the same dataset."
+      },
+      {
+        "recipe_id": "all_ids_ppg_bilateral_disbursement",
+        "component_id": "all_ids_disbursement",
+        "dataset_id": "ids",
+        "field_name": "include_source_iso3",
+        "field_scope": "component",
+        "default_value": "NULL",
+        "allowed_values": "character vector of source ISO3 codes or NULL",
+        "allowed_values_raw": null,
+        "ui_exposed": false,
+        "notes": "Keep only these source ISO3 codes in this component."
+      },
+      {
+        "recipe_id": "all_ids_ppg_bilateral_disbursement",
+        "component_id": "all_ids_disbursement",
+        "dataset_id": "ids",
+        "field_name": "exclude_source_iso3",
+        "field_scope": "component",
+        "default_value": "NULL",
+        "allowed_values": "character vector of source ISO3 codes or NULL",
+        "allowed_values_raw": null,
+        "ui_exposed": false,
+        "notes": "Drop these source ISO3 codes from this component."
+      }
+    ],
+    "host_choices": [
+      {
+        "host_iso3": "DZA",
+        "host_country": "Algeria"
+      },
+      {
+        "host_iso3": "AGO",
+        "host_country": "Angola"
+      },
+      {
+        "host_iso3": "BEN",
+        "host_country": "Benin"
+      },
+      {
+        "host_iso3": "BWA",
+        "host_country": "Botswana"
+      },
+      {
+        "host_iso3": "BFA",
+        "host_country": "Burkina Faso"
+      },
+      {
+        "host_iso3": "BDI",
+        "host_country": "Burundi"
+      },
+      {
+        "host_iso3": "CPV",
+        "host_country": "Cabo Verde"
+      },
+      {
+        "host_iso3": "CMR",
+        "host_country": "Cameroon"
+      },
+      {
+        "host_iso3": "CAF",
+        "host_country": "Central African Republic"
+      },
+      {
+        "host_iso3": "TCD",
+        "host_country": "Chad"
+      },
+      {
+        "host_iso3": "COM",
+        "host_country": "Comoros"
+      },
+      {
+        "host_iso3": "COD",
+        "host_country": "Congo, Dem. Rep."
+      },
+      {
+        "host_iso3": "COG",
+        "host_country": "Congo, Rep."
+      },
+      {
+        "host_iso3": "CIV",
+        "host_country": "Cote d'Ivoire"
+      },
+      {
+        "host_iso3": "DJI",
+        "host_country": "Djibouti"
+      },
+      {
+        "host_iso3": "EGY",
+        "host_country": "Egypt, Arab Rep."
+      },
+      {
+        "host_iso3": "GNQ",
+        "host_country": "Equatorial Guinea"
+      },
+      {
+        "host_iso3": "ERI",
+        "host_country": "Eritrea"
+      },
+      {
+        "host_iso3": "SWZ",
+        "host_country": "Eswatini"
+      },
+      {
+        "host_iso3": "ETH",
+        "host_country": "Ethiopia"
+      },
+      {
+        "host_iso3": "GAB",
+        "host_country": "Gabon"
+      },
+      {
+        "host_iso3": "GMB",
+        "host_country": "Gambia, The"
+      },
+      {
+        "host_iso3": "GHA",
+        "host_country": "Ghana"
+      },
+      {
+        "host_iso3": "GIN",
+        "host_country": "Guinea"
+      },
+      {
+        "host_iso3": "GNB",
+        "host_country": "Guinea-Bissau"
+      },
+      {
+        "host_iso3": "KEN",
+        "host_country": "Kenya"
+      },
+      {
+        "host_iso3": "LSO",
+        "host_country": "Lesotho"
+      },
+      {
+        "host_iso3": "LBR",
+        "host_country": "Liberia"
+      },
+      {
+        "host_iso3": "LBY",
+        "host_country": "Libya"
+      },
+      {
+        "host_iso3": "MDG",
+        "host_country": "Madagascar"
+      },
+      {
+        "host_iso3": "MWI",
+        "host_country": "Malawi"
+      },
+      {
+        "host_iso3": "MLI",
+        "host_country": "Mali"
+      },
+      {
+        "host_iso3": "MRT",
+        "host_country": "Mauritania"
+      },
+      {
+        "host_iso3": "MUS",
+        "host_country": "Mauritius"
+      },
+      {
+        "host_iso3": "MAR",
+        "host_country": "Morocco"
+      },
+      {
+        "host_iso3": "MOZ",
+        "host_country": "Mozambique"
+      },
+      {
+        "host_iso3": "NAM",
+        "host_country": "Namibia"
+      },
+      {
+        "host_iso3": "NER",
+        "host_country": "Niger"
+      },
+      {
+        "host_iso3": "NGA",
+        "host_country": "Nigeria"
+      },
+      {
+        "host_iso3": "RWA",
+        "host_country": "Rwanda"
+      },
+      {
+        "host_iso3": "STP",
+        "host_country": "Sao Tome and Principe"
+      },
+      {
+        "host_iso3": "SEN",
+        "host_country": "Senegal"
+      },
+      {
+        "host_iso3": "SYC",
+        "host_country": "Seychelles"
+      },
+      {
+        "host_iso3": "SLE",
+        "host_country": "Sierra Leone"
+      },
+      {
+        "host_iso3": "SOM",
+        "host_country": "Somalia, Fed. Rep."
+      },
+      {
+        "host_iso3": "ZAF",
+        "host_country": "South Africa"
+      },
+      {
+        "host_iso3": "SSD",
+        "host_country": "South Sudan"
+      },
+      {
+        "host_iso3": "SDN",
+        "host_country": "Sudan"
+      },
+      {
+        "host_iso3": "TZA",
+        "host_country": "Tanzania"
+      },
+      {
+        "host_iso3": "TGO",
+        "host_country": "Togo"
+      },
+      {
+        "host_iso3": "TUN",
+        "host_country": "Tunisia"
+      },
+      {
+        "host_iso3": "UGA",
+        "host_country": "Uganda"
+      },
+      {
+        "host_iso3": "ZMB",
+        "host_country": "Zambia"
+      },
+      {
+        "host_iso3": "ZWE",
+        "host_country": "Zimbabwe"
+      }
+    ],
+    "source_choices": [
+      {
+        "source_iso3": "AFG",
+        "source_country": "Afghanistan"
+      },
+      {
+        "source_iso3": "ALB",
+        "source_country": "Albania"
+      },
+      {
+        "source_iso3": "DZA",
+        "source_country": "Algeria"
+      },
+      {
+        "source_iso3": "ASM",
+        "source_country": "American Samoa"
+      },
+      {
+        "source_iso3": "AND",
+        "source_country": "Andorra"
+      },
+      {
+        "source_iso3": "AGO",
+        "source_country": "Angola"
+      },
+      {
+        "source_iso3": "ATG",
+        "source_country": "Antigua"
+      },
+      {
+        "source_iso3": "ARG",
+        "source_country": "Argentina"
+      },
+      {
+        "source_iso3": "ARM",
+        "source_country": "Armenia"
+      },
+      {
+        "source_iso3": "ABW",
+        "source_country": "Aruba"
+      },
+      {
+        "source_iso3": "AUS",
+        "source_country": "Australia"
+      },
+      {
+        "source_iso3": "AUT",
+        "source_country": "Austria"
+      },
+      {
+        "source_iso3": "AZE",
+        "source_country": "Azerbaijan"
+      },
+      {
+        "source_iso3": "BHS",
+        "source_country": "Bahamas"
+      },
+      {
+        "source_iso3": "BHR",
+        "source_country": "Bahrain"
+      },
+      {
+        "source_iso3": "BGD",
+        "source_country": "Bangladesh"
+      },
+      {
+        "source_iso3": "BRB",
+        "source_country": "Barbados"
+      },
+      {
+        "source_iso3": "BLR",
+        "source_country": "Belarus"
+      },
+      {
+        "source_iso3": "BEL",
+        "source_country": "Belgium"
+      },
+      {
+        "source_iso3": "BLZ",
+        "source_country": "Belize"
+      },
+      {
+        "source_iso3": "BEN",
+        "source_country": "Benin"
+      },
+      {
+        "source_iso3": "BMU",
+        "source_country": "Bermuda"
+      },
+      {
+        "source_iso3": "BTN",
+        "source_country": "Bhutan"
+      },
+      {
+        "source_iso3": "BOL",
+        "source_country": "Bolivia"
+      },
+      {
+        "source_iso3": "BOL",
+        "source_country": "Bolivia, Plurinational State of"
+      },
+      {
+        "source_iso3": "BIH",
+        "source_country": "Bosnia and Herzegovina"
+      },
+      {
+        "source_iso3": "BIH",
+        "source_country": "Bosnia-Herzegovina"
+      },
+      {
+        "source_iso3": "BWA",
+        "source_country": "Botswana"
+      },
+      {
+        "source_iso3": "BRA",
+        "source_country": "Brazil"
+      },
+      {
+        "source_iso3": "BRN",
+        "source_country": "Brunei"
+      },
+      {
+        "source_iso3": "BRN",
+        "source_country": "Brunei Darussalam"
+      },
+      {
+        "source_iso3": "BGR",
+        "source_country": "Bulgaria"
+      },
+      {
+        "source_iso3": "BFA",
+        "source_country": "Burkina Faso"
+      },
+      {
+        "source_iso3": "BDI",
+        "source_country": "Burundi"
+      },
+      {
+        "source_iso3": "CPV",
+        "source_country": "Cabo Verde"
+      },
+      {
+        "source_iso3": "KHM",
+        "source_country": "Cambodia"
+      },
+      {
+        "source_iso3": "CMR",
+        "source_country": "Cameroon"
+      },
+      {
+        "source_iso3": "CAN",
+        "source_country": "Canada"
+      },
+      {
+        "source_iso3": "CYM",
+        "source_country": "Cayman Islands"
+      },
+      {
+        "source_iso3": "CAF",
+        "source_country": "Central African Republic"
+      },
+      {
+        "source_iso3": "TCD",
+        "source_country": "Chad"
+      },
+      {
+        "source_iso3": "CHI",
+        "source_country": "Channel Islands"
+      },
+      {
+        "source_iso3": "CHL",
+        "source_country": "Chile"
+      },
+      {
+        "source_iso3": "CHN",
+        "source_country": "China"
+      },
+      {
+        "source_iso3": "COL",
+        "source_country": "Colombia"
+      },
+      {
+        "source_iso3": "COM",
+        "source_country": "Comoros"
+      },
+      {
+        "source_iso3": "COG",
+        "source_country": "Congo"
+      },
+      {
+        "source_iso3": "COD",
+        "source_country": "Congo, Dem. Rep."
+      },
+      {
+        "source_iso3": "COD",
+        "source_country": "Congo, Democratic Republic of"
+      },
+      {
+        "source_iso3": "COG",
+        "source_country": "Congo, Rep."
+      },
+      {
+        "source_iso3": "CRI",
+        "source_country": "Costa Rica"
+      },
+      {
+        "source_iso3": "CIV",
+        "source_country": "Cote D`Ivoire, Republic Of"
+      },
+      {
+        "source_iso3": "HRV",
+        "source_country": "Croatia"
+      },
+      {
+        "source_iso3": "CUB",
+        "source_country": "Cuba"
+      },
+      {
+        "source_iso3": "CYP",
+        "source_country": "Cyprus"
+      },
+      {
+        "source_iso3": "CZE",
+        "source_country": "Czechia"
+      },
+      {
+        "source_iso3": "CIV",
+        "source_country": "Côte d'Ivoire"
+      },
+      {
+        "source_iso3": "DNK",
+        "source_country": "Denmark"
+      },
+      {
+        "source_iso3": "DJI",
+        "source_country": "Djibouti"
+      },
+      {
+        "source_iso3": "DMA",
+        "source_country": "Dominica"
+      },
+      {
+        "source_iso3": "DOM",
+        "source_country": "Dominican Republic"
+      },
+      {
+        "source_iso3": "ECU",
+        "source_country": "Ecuador"
+      },
+      {
+        "source_iso3": "EGY",
+        "source_country": "Egypt"
+      },
+      {
+        "source_iso3": "SLV",
+        "source_country": "El Salvador"
+      },
+      {
+        "source_iso3": "GNQ",
+        "source_country": "Equatorial Guinea"
+      },
+      {
+        "source_iso3": "ERI",
+        "source_country": "Eritrea"
+      },
+      {
+        "source_iso3": "EST",
+        "source_country": "Estonia"
+      },
+      {
+        "source_iso3": "SWZ",
+        "source_country": "Eswatini"
+      },
+      {
+        "source_iso3": "ETH",
+        "source_country": "Ethiopia"
+      },
+      {
+        "source_iso3": "FJI",
+        "source_country": "Fiji"
+      },
+      {
+        "source_iso3": "FIN",
+        "source_country": "Finland"
+      },
+      {
+        "source_iso3": "FRA",
+        "source_country": "France"
+      },
+      {
+        "source_iso3": "PYF",
+        "source_country": "French Polynesia"
+      },
+      {
+        "source_iso3": "GAB",
+        "source_country": "Gabon"
+      },
+      {
+        "source_iso3": "GMB",
+        "source_country": "Gambia"
+      },
+      {
+        "source_iso3": "GMB",
+        "source_country": "Gambia, The"
+      },
+      {
+        "source_iso3": "GEO",
+        "source_country": "Georgia"
+      },
+      {
+        "source_iso3": "DEU",
+        "source_country": "Germany"
+      },
+      {
+        "source_iso3": "DEU",
+        "source_country": "Germany, Fed. Rep. of"
+      },
+      {
+        "source_iso3": "GHA",
+        "source_country": "Ghana"
+      },
+      {
+        "source_iso3": "GIB",
+        "source_country": "Gibraltar"
+      },
+      {
+        "source_iso3": "GRC",
+        "source_country": "Greece"
+      },
+      {
+        "source_iso3": "GRD",
+        "source_country": "Grenada"
+      },
+      {
+        "source_iso3": "GUM",
+        "source_country": "Guam"
+      },
+      {
+        "source_iso3": "GTM",
+        "source_country": "Guatemala"
+      },
+      {
+        "source_iso3": "GIN",
+        "source_country": "Guinea"
+      },
+      {
+        "source_iso3": "GNB",
+        "source_country": "Guinea-Bissau"
+      },
+      {
+        "source_iso3": "GUY",
+        "source_country": "Guyana"
+      },
+      {
+        "source_iso3": "HTI",
+        "source_country": "Haiti"
+      },
+      {
+        "source_iso3": "HND",
+        "source_country": "Honduras"
+      },
+      {
+        "source_iso3": "HKG",
+        "source_country": "Hong Kong"
+      },
+      {
+        "source_iso3": "HUN",
+        "source_country": "Hungary"
+      },
+      {
+        "source_iso3": "ISL",
+        "source_country": "Iceland"
+      },
+      {
+        "source_iso3": "IND",
+        "source_country": "India"
+      },
+      {
+        "source_iso3": "IDN",
+        "source_country": "Indonesia"
+      },
+      {
+        "source_iso3": "IRN",
+        "source_country": "Iran, Islamic Republic Of"
+      },
+      {
+        "source_iso3": "IRN",
+        "source_country": "Iran, Islamic Republic of"
+      },
+      {
+        "source_iso3": "IRQ",
+        "source_country": "Iraq"
+      },
+      {
+        "source_iso3": "IRL",
+        "source_country": "Ireland"
+      },
+      {
+        "source_iso3": "ISR",
+        "source_country": "Israel"
+      },
+      {
+        "source_iso3": "ITA",
+        "source_country": "Italy"
+      },
+      {
+        "source_iso3": "JAM",
+        "source_country": "Jamaica"
+      },
+      {
+        "source_iso3": "JPN",
+        "source_country": "Japan"
+      },
+      {
+        "source_iso3": "JOR",
+        "source_country": "Jordan"
+      },
+      {
+        "source_iso3": "KAZ",
+        "source_country": "Kazakhstan"
+      },
+      {
+        "source_iso3": "KEN",
+        "source_country": "Kenya"
+      },
+      {
+        "source_iso3": "KIR",
+        "source_country": "Kiribati"
+      },
+      {
+        "source_iso3": "PRK",
+        "source_country": "Korea, D.P.R. of"
+      },
+      {
+        "source_iso3": "KOR",
+        "source_country": "Korea, Republic of"
+      },
+      {
+        "source_iso3": "XKX",
+        "source_country": "Kosovo"
+      },
+      {
+        "source_iso3": "KWT",
+        "source_country": "Kuwait"
+      },
+      {
+        "source_iso3": "KGZ",
+        "source_country": "Kyrgyz Republic"
+      },
+      {
+        "source_iso3": "LAO",
+        "source_country": "Lao People's Democratic Rep."
+      },
+      {
+        "source_iso3": "LVA",
+        "source_country": "Latvia"
+      },
+      {
+        "source_iso3": "LBN",
+        "source_country": "Lebanon"
+      },
+      {
+        "source_iso3": "LSO",
+        "source_country": "Lesotho"
+      },
+      {
+        "source_iso3": "LBR",
+        "source_country": "Liberia"
+      },
+      {
+        "source_iso3": "LBY",
+        "source_country": "Libya"
+      },
+      {
+        "source_iso3": "LIE",
+        "source_country": "Liechtenstein"
+      },
+      {
+        "source_iso3": "LTU",
+        "source_country": "Lithuania"
+      },
+      {
+        "source_iso3": "LUX",
+        "source_country": "Luxembourg"
+      },
+      {
+        "source_iso3": "MAC",
+        "source_country": "Macao"
+      },
+      {
+        "source_iso3": "MDG",
+        "source_country": "Madagascar"
+      },
+      {
+        "source_iso3": "MWI",
+        "source_country": "Malawi"
+      },
+      {
+        "source_iso3": "MYS",
+        "source_country": "Malaysia"
+      },
+      {
+        "source_iso3": "MDV",
+        "source_country": "Maldives"
+      },
+      {
+        "source_iso3": "MLI",
+        "source_country": "Mali"
+      },
+      {
+        "source_iso3": "MLT",
+        "source_country": "Malta"
+      },
+      {
+        "source_iso3": "MHL",
+        "source_country": "Marshall Islands (the)"
+      },
+      {
+        "source_iso3": "MRT",
+        "source_country": "Mauritania"
+      },
+      {
+        "source_iso3": "MUS",
+        "source_country": "Mauritius"
+      },
+      {
+        "source_iso3": "MEX",
+        "source_country": "Mexico"
+      },
+      {
+        "source_iso3": "FSM",
+        "source_country": "Micronesia Fed Sts"
+      },
+      {
+        "source_iso3": "MDA",
+        "source_country": "Moldova"
+      },
+      {
+        "source_iso3": "MCO",
+        "source_country": "Monaco"
+      },
+      {
+        "source_iso3": "MNG",
+        "source_country": "Mongolia"
+      },
+      {
+        "source_iso3": "MNE",
+        "source_country": "Montenegro"
+      },
+      {
+        "source_iso3": "MAR",
+        "source_country": "Morocco"
+      },
+      {
+        "source_iso3": "MOZ",
+        "source_country": "Mozambique"
+      },
+      {
+        "source_iso3": "MMR",
+        "source_country": "Myanmar"
+      },
+      {
+        "source_iso3": "NAM",
+        "source_country": "Namibia"
+      },
+      {
+        "source_iso3": "NPL",
+        "source_country": "Nepal"
+      },
+      {
+        "source_iso3": "NLD",
+        "source_country": "Netherlands"
+      },
+      {
+        "source_iso3": "NCL",
+        "source_country": "New Caledonia (Fr.)"
+      },
+      {
+        "source_iso3": "NZL",
+        "source_country": "New Zealand"
+      },
+      {
+        "source_iso3": "NIC",
+        "source_country": "Nicaragua"
+      },
+      {
+        "source_iso3": "NER",
+        "source_country": "Niger"
+      },
+      {
+        "source_iso3": "NGA",
+        "source_country": "Nigeria"
+      },
+      {
+        "source_iso3": "MKD",
+        "source_country": "North Macedonia"
+      },
+      {
+        "source_iso3": "NOR",
+        "source_country": "Norway"
+      },
+      {
+        "source_iso3": "OMN",
+        "source_country": "Oman"
+      },
+      {
+        "source_iso3": "PAK",
+        "source_country": "Pakistan"
+      },
+      {
+        "source_iso3": "PAN",
+        "source_country": "Panama"
+      },
+      {
+        "source_iso3": "PNG",
+        "source_country": "Papua New Guinea"
+      },
+      {
+        "source_iso3": "PRY",
+        "source_country": "Paraguay"
+      },
+      {
+        "source_iso3": "PER",
+        "source_country": "Peru"
+      },
+      {
+        "source_iso3": "PHL",
+        "source_country": "Philippines"
+      },
+      {
+        "source_iso3": "POL",
+        "source_country": "Poland"
+      },
+      {
+        "source_iso3": "PRT",
+        "source_country": "Portugal"
+      },
+      {
+        "source_iso3": "PRI",
+        "source_country": "Puerto Rico"
+      },
+      {
+        "source_iso3": "QAT",
+        "source_country": "Qatar"
+      },
+      {
+        "source_iso3": "KOR",
+        "source_country": "Republic of Korea"
+      },
+      {
+        "source_iso3": "ROU",
+        "source_country": "Romania"
+      },
+      {
+        "source_iso3": "RUS",
+        "source_country": "Russian Federation"
+      },
+      {
+        "source_iso3": "RWA",
+        "source_country": "Rwanda"
+      },
+      {
+        "source_iso3": "KNA",
+        "source_country": "Saint Kitts and Nevis"
+      },
+      {
+        "source_iso3": "WSM",
+        "source_country": "Samoa"
+      },
+      {
+        "source_iso3": "STP",
+        "source_country": "Sao Tome & Principe"
+      },
+      {
+        "source_iso3": "SAU",
+        "source_country": "Saudi Arabia"
+      },
+      {
+        "source_iso3": "SEN",
+        "source_country": "Senegal"
+      },
+      {
+        "source_iso3": "SRB",
+        "source_country": "Serbia"
+      },
+      {
+        "source_iso3": "SYC",
+        "source_country": "Seychelles"
+      },
+      {
+        "source_iso3": "SLE",
+        "source_country": "Sierra Leone"
+      },
+      {
+        "source_iso3": "SGP",
+        "source_country": "Singapore"
+      },
+      {
+        "source_iso3": "SVK",
+        "source_country": "Slovak Republic"
+      },
+      {
+        "source_iso3": "SVK",
+        "source_country": "Slovakia"
+      },
+      {
+        "source_iso3": "SVN",
+        "source_country": "Slovenia"
+      },
+      {
+        "source_iso3": "SLB",
+        "source_country": "Solomon Islands"
+      },
+      {
+        "source_iso3": "SOM",
+        "source_country": "Somalia"
+      },
+      {
+        "source_iso3": "SOM",
+        "source_country": "Somalia, Fed. Rep."
+      },
+      {
+        "source_iso3": "ZAF",
+        "source_country": "South Africa"
+      },
+      {
+        "source_iso3": "SSD",
+        "source_country": "South Sudan"
+      },
+      {
+        "source_iso3": "ESP",
+        "source_country": "Spain"
+      },
+      {
+        "source_iso3": "LKA",
+        "source_country": "Sri Lanka"
+      },
+      {
+        "source_iso3": "KNA",
+        "source_country": "St. Kitts And Nevis"
+      },
+      {
+        "source_iso3": "LCA",
+        "source_country": "St. Lucia"
+      },
+      {
+        "source_iso3": "PSE",
+        "source_country": "State of Palestine"
+      },
+      {
+        "source_iso3": "SDN",
+        "source_country": "Sudan"
+      },
+      {
+        "source_iso3": "SUR",
+        "source_country": "Suriname"
+      },
+      {
+        "source_iso3": "SWE",
+        "source_country": "Sweden"
+      },
+      {
+        "source_iso3": "CHE",
+        "source_country": "Switzerland"
+      },
+      {
+        "source_iso3": "SYR",
+        "source_country": "Syrian Arab Republic"
+      },
+      {
+        "source_iso3": "TJK",
+        "source_country": "Tajikistan"
+      },
+      {
+        "source_iso3": "TZA",
+        "source_country": "Tanzania"
+      },
+      {
+        "source_iso3": "THA",
+        "source_country": "Thailand"
+      },
+      {
+        "source_iso3": "TLS",
+        "source_country": "Timor-Leste"
+      },
+      {
+        "source_iso3": "TGO",
+        "source_country": "Togo"
+      },
+      {
+        "source_iso3": "TON",
+        "source_country": "Tonga"
+      },
+      {
+        "source_iso3": "TTO",
+        "source_country": "Trinidad & Tobago"
+      },
+      {
+        "source_iso3": "TUN",
+        "source_country": "Tunisia"
+      },
+      {
+        "source_iso3": "TUR",
+        "source_country": "Turkiye"
+      },
+      {
+        "source_iso3": "TKM",
+        "source_country": "Turkmenistan"
+      },
+      {
+        "source_iso3": "VIR",
+        "source_country": "US Virgin Islands"
+      },
+      {
+        "source_iso3": "UGA",
+        "source_country": "Uganda"
+      },
+      {
+        "source_iso3": "UKR",
+        "source_country": "Ukraine"
+      },
+      {
+        "source_iso3": "ARE",
+        "source_country": "United Arab Emirates"
+      },
+      {
+        "source_iso3": "GBR",
+        "source_country": "United Kingdom"
+      },
+      {
+        "source_iso3": "TZA",
+        "source_country": "United Republic of Tanzania"
+      },
+      {
+        "source_iso3": "USA",
+        "source_country": "United States"
+      },
+      {
+        "source_iso3": "URY",
+        "source_country": "Uruguay"
+      },
+      {
+        "source_iso3": "UZB",
+        "source_country": "Uzbekistan"
+      },
+      {
+        "source_iso3": "VUT",
+        "source_country": "Vanuatu"
+      },
+      {
+        "source_iso3": "VEN",
+        "source_country": "Venezuela, Republic Bolivarian"
+      },
+      {
+        "source_iso3": "VNM",
+        "source_country": "Viet Nam"
+      },
+      {
+        "source_iso3": "VIR",
+        "source_country": "Virgin Is.(US)"
+      },
+      {
+        "source_iso3": "YEM",
+        "source_country": "Yemen"
+      },
+      {
+        "source_iso3": "YEM",
+        "source_country": "Yemen, Republic Of"
+      },
+      {
+        "source_iso3": "ZMB",
+        "source_country": "Zambia"
+      },
+      {
+        "source_iso3": "ZWE",
+        "source_country": "Zimbabwe"
+      }
+    ]
+  }
+}
