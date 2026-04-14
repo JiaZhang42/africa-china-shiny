@@ -5,6 +5,10 @@ suppressPackageStartupMessages({
   library(tidyverse)
 })
 
+if (requireNamespace("ragg", quietly = TRUE)) {
+  options(shiny.useragg = TRUE)
+}
+
 source(file.path("R", "runtime", "finance_app_runtime.R"))
 
 manifest <- readRDS(file.path("data", "finance_app_manifest.rds"))

@@ -10,11 +10,7 @@ wrap_caption <- function(text, width = 100) {
   stringr::str_wrap(text, width = width)
 }
 
-plot_font_family <- function(preferred, fallback = "sans") {
-  if (interactive()) preferred else fallback
-}
-
-theme_hierarchy <- function(base_size = 12, dark_text = "#1A242F") {
+theme_hierarchy <- function(base_size = 11, dark_text = "#1A242F") {
   mid_text <- monochromeR::generate_palette(dark_text, "go_lighter", n_colours = 5)[2]
   light_text <- monochromeR::generate_palette(dark_text, "go_lighter", n_colours = 5)[3]
 
@@ -22,26 +18,26 @@ theme_hierarchy <- function(base_size = 12, dark_text = "#1A242F") {
     theme(
       text = element_text(
         colour = mid_text,
-        family = plot_font_family("Brandon Text"),
+        family = "sans",
         lineheight = 1.1
       ),
       plot.title = element_text(
         colour = dark_text,
-        family = plot_font_family("Enriqueta"),
+        family = "serif",
         face = "bold",
-        size = rel(1.2),
+        size = rel(1.15),
         margin = margin(12, 0, 8, 0)
       ),
-      plot.subtitle = element_text(size = rel(1.0), margin = margin(4, 0, 0, 0)),
+      plot.subtitle = element_text(size = rel(0.95), margin = margin(4, 0, 0, 0)),
       axis.text.y = element_text(colour = light_text, size = rel(0.8)),
-      axis.title.y = element_text(size = 12, margin = margin(0, 4, 0, 0)),
-      axis.text.x = element_text(colour = mid_text, size = rel(1.0)),
+      axis.title.y = element_text(size = rel(0.95), margin = margin(0, 4, 0, 0)),
+      axis.text.x = element_text(colour = mid_text, size = rel(0.95)),
       axis.title.x = element_blank(),
       legend.position = "bottom",
       legend.justification = 1,
       panel.grid = element_line(colour = "grey98"),
       plot.caption = element_text(
-        size = rel(0.8),
+        size = rel(0.72),
         lineheight = 1.05,
         hjust = 0,
         margin = margin(8, 0, 0, 0)
@@ -49,9 +45,9 @@ theme_hierarchy <- function(base_size = 12, dark_text = "#1A242F") {
       plot.caption.position = "plot",
       strip.text = element_text(
         colour = dark_text,
-        family = plot_font_family("Enriqueta"),
+        family = "serif",
         face = "bold",
-        size = rel(0.95)
+        size = rel(0.9)
       ),
       plot.margin = margin(20, 20, 20, 20)
     )

@@ -131,7 +131,7 @@ build_finance_plot <- function(request, context = load_finance_explorer_context(
       subtitle = if (request$simplified) NULL else plot_subtitle,
       caption = if (request$simplified) NULL else wrap_caption(plot_caption)
     ) +
-    theme_hierarchy(base_size = if (request$simplified) 9 else 12)
+    theme_hierarchy(base_size = if (request$simplified) 8.5 else 11)
 
   if (!is.null(request$shock_years) && length(request$shock_years) > 0L) {
     plot_obj <- plot_obj +
