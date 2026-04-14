@@ -31,7 +31,9 @@
 # - shock_years: optional numeric vector of vertical reference lines.
 # - filters: optional list of sample restrictions. Currently supported:
 #   africa_host, high_corr_host, exclude_african_sources, require_host_gdp.
-# - title / subtitle / caption: optional plot-label overrides.
+#   These are restrictive toggles: only TRUE applies the filter; FALSE or NULL
+#   leaves the sample unrestricted on that dimension.
+# - title / subtitle / x_lab / y_lab / caption: optional plot-label overrides.
 finance_request_template <- function(recipe_id = "china_aid_vs_rest_fdi") {
   recipe <- build_recipe_catalog() |>
     filter(.data$recipe_id == !!recipe_id)
@@ -73,6 +75,8 @@ finance_request_template <- function(recipe_id = "china_aid_vs_rest_fdi") {
     ),
     title = NULL,
     subtitle = NULL,
+    x_lab = NULL,
+    y_lab = NULL,
     caption = NULL
   )
 }
@@ -92,7 +96,7 @@ finance_request_field_catalog <- function() {
       "simplified",
       "shock_years",
       "filters",
-      "title / subtitle / caption"
+      "title / subtitle / x_lab / y_lab / caption"
     ),
     required = c(
       TRUE,
@@ -143,7 +147,7 @@ finance_request_field_catalog <- function() {
       "used only by build_finance_plot()",
       "for dense faceted layouts",
       "used by build_finance_plot()",
-      "sample restrictions applied after joins to host controls",
+      "restrictive toggles: only TRUE applies the filter; FALSE or NULL means no restriction",
       "plot-label overrides"
     )
   )

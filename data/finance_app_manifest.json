@@ -1,9 +1,9 @@
 {
   "app_name": "Africa-China Finance Explorer",
-  "bundle_version": "20260414T071858Z-cdc3216",
+  "bundle_version": "20260414T092152Z-274e7b2",
   "source_repo": "JiaZhang42/africa-china",
-  "source_commit": "cdc32164d3e6e8c99f6e85f0170361519f50ea3d",
-  "export_time_utc": "2026-04-14 07:18:58 UTC",
+  "source_commit": "274e7b2bc38bd2d092ab8abe6ccdb74cf5889cba",
+  "export_time_utc": "2026-04-14 09:21:52 UTC",
   "coverage": {
     "host_scope": "Africa",
     "year_min": 2000,
@@ -36,6 +36,22 @@
         "Other": ["ABW", "AFG", "AGO", "ALB", "AND", "ARE", "ARM", "ASM", "ATG", "AZE", "BDI", "BEN", "BFA", "BGD", "BHR", "BHS", "BIH", "BLR", "BLZ", "BMU", "BOL", "BRB", "BRN", "BTN", "BWA", "CAF", "CHI", "CIV", "CMR", "COD", "COG", "COL", "COM", "CPV", "CRI", "CUB", "CYM", "CYP", "DJI", "DMA", "DOM", "DZA", "ECU", "EGY", "ERI", "EST", "ETH", "FJI", "FSM", "GAB", "GEO", "GHA", "GIB", "GIN", "GMB", "GNB", "GNQ", "GRD", "GTM", "GUM", "GUY", "HKG", "HND", "HRV", "HTI", "IDN", "IND", "IRN", "IRQ", "JAM", "JOR", "KAZ", "KEN", "KGZ", "KHM", "KIR", "KNA", "KWT", "LAO", "LBN", "LBR", "LBY", "LCA", "LIE", "LKA", "LSO", "LTU", "LVA", "MAC", "MAR", "MCO", "MDA", "MDG", "MDV", "MHL", "MKD", "MLI", "MLT", "MMR", "MNE", "MNG", "MOZ", "MRT", "MUS", "MWI", "MYS", "NAM", "NCL", "NER", "NGA", "NIC", "NPL", "OMN", "PAK", "PAN", "PER", "PHL", "PNG", "PRI", "PRK", "PRY", "PSE", "PYF", "QAT", "ROU", "RUS", "RWA", "SAU", "SDN", "SEN", "SGP", "SLB", "SLE", "SLV", "SOM", "SRB", "SSD", "STP", "SUR", "SWZ", "SYC", "SYR", "TCD", "TGO", "THA", "TJK", "TKM", "TLS", "TON", "TTO", "TUN", "TZA", "UGA", "UKR", "URY", "UZB", "VEN", "VIR", "VNM", "VUT", "WSM", "XKX", "YEM", "ZAF", "ZMB", "ZWE"]
       }
     },
+    "host_group_presets": [
+      {
+        "preset_id": "uuu_pre2005_top10_high_corr",
+        "preset_label": "US + UK + France pre-2005 top 10 high-corruption hosts",
+        "host_iso3": ["ZAF", "DZA", "NGA", "EGY", "MAR", "GNQ", "COG", "KEN", "TUN", "AGO"],
+        "host_country": ["South Africa", "Algeria", "Nigeria", "Egypt, Arab Rep.", "Morocco", "Equatorial Guinea", "Congo, Rep.", "Kenya", "Tunisia", "Angola"],
+        "notes": "Ranking uses combined US + UK + France flows over 2000-2004. High corruption determines host eligibility, not year-by-year row inclusion."
+      },
+      {
+        "preset_id": "china_top10_high_corr_2000_2020",
+        "preset_label": "China top 10 high-corruption hosts (ranked through 2020)",
+        "host_iso3": ["AGO", "ZAF", "COD", "ETH", "EGY", "NGA", "ZMB", "SDN", "KEN", "GHA"],
+        "host_country": ["Angola", "South Africa", "Congo, Dem. Rep.", "Ethiopia", "Egypt, Arab Rep.", "Nigeria", "Zambia", "Sudan", "Kenya", "Ghana"],
+        "notes": "Ranking uses China financing totals over 2000-2020. High corruption determines host eligibility, not year-by-year row inclusion."
+      }
+    ],
     "recipe_catalog": [
       {
         "recipe_id": "all_fdi_outflow",

@@ -90,6 +90,8 @@ build_finance_plot <- function(request, context = load_finance_explorer_context(
   plot_title <- request$title %||% default_title
   plot_subtitle <- request$subtitle %||%
     if (length(host_group_levels) > 1L) "Host groups are shown in separate panels." else NULL
+  plot_x_lab <- request$x_lab %||% NULL
+  plot_y_lab <- request$y_lab %||% axis_label
 
   trim_note <- if (request$trim == "p99_by_year") "Trim: within-year p99." else "Trim: none."
   moving_average_note <- if (request$moving_average_n > 1L) {
@@ -122,8 +124,8 @@ build_finance_plot <- function(request, context = load_finance_explorer_context(
       }
     ) +
     labs(
-      x = NULL,
-      y = if (request$simplified) NULL else axis_label,
+      x = if (request$simplified) NULL else plot_x_lab,
+      y = if (request$simplified) NULL else plot_y_lab,
       color = NULL,
       title = plot_title,
       subtitle = if (request$simplified) NULL else plot_subtitle,

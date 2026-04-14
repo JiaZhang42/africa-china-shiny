@@ -132,14 +132,14 @@ assign_group_labels <- function(data, var_name, groups, default_group_name) {
 apply_request_filters <- function(panel, request) {
   filters <- request$filters %||% list()
 
-  if (!is.null(filters$africa_host)) {
+  if (isTRUE(filters$africa_host)) {
     panel <- panel |>
-      filter(africa_host == as.integer(isTRUE(filters$africa_host)))
+      filter(africa_host == 1)
   }
 
-  if (!is.null(filters$high_corr_host)) {
+  if (isTRUE(filters$high_corr_host)) {
     panel <- panel |>
-      filter(high_corr_host == as.integer(isTRUE(filters$high_corr_host)))
+      filter(high_corr_host == 1)
   }
 
   if (isTRUE(filters$exclude_african_sources)) {
