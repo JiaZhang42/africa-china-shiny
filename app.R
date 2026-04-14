@@ -281,7 +281,7 @@ app_css <- "
 .app-pane {display: flex; flex-direction: column; min-width: 0;}
 .plot-pane {min-width: 0;}
 .request-pane {min-width: 340px;}
-.plot-stage {resize: both; overflow: auto; min-width: 360px; min-height: 320px; width: 100%; height: min(72vh, 760px); border: 1px solid #E1D7C9; border-radius: 18px; background: #FFFFFF;}
+.plot-stage {resize: both; overflow: hidden; min-width: 360px; min-height: 320px; width: 100%; height: min(72vh, 760px); border: 1px solid #E1D7C9; border-radius: 18px; background: #FFFFFF;}
 .plot-stage .shiny-plot-output {display: block; width: 100% !important; height: 100% !important;}
 @media (max-width: 1280px) {
   .main-grid {grid-template-columns: minmax(620px, 1fr) minmax(320px, 360px); min-width: 960px;}
@@ -304,46 +304,60 @@ ui <- page_sidebar(
   tags$head(
     tags$style(HTML(app_css)),
     tags$script(HTML("
-      function registerPlotStageObserver() {
+      function registerPlotFullScreenBridge() {
         const plotStage = document.getElementById('plot_stage');
-        if (!plotStage || plotStage.dataset.resizeObserverAttached === '1' || typeof ResizeObserver === 'undefined') {
+        if (!plotStage || plotStage.dataset.fullScreenBridgeAttached === '1' || typeof ResizeObserver === 'undefined') {
           return;
         }
 
-        const sendSize = function() {
-          const rect = plotStage.getBoundingClientRect();
-          const width = Math.max(320, Math.round(rect.width));
-          const height = Math.max(280, Math.round(rect.height));
-          if (window.Shiny) {
-            Shiny.setInputValue('plot_stage_width', width, {priority: 'event'});
-            Shiny.setInputValue('plot_stage_height', height, {priority: 'event'});
-          }
+        let isFullScreen = false;
+        let resizeTimer = null;
+
+        const notifyPlotResize = function(delay = 0) {
+          window.clearTimeout(resizeTimer);
+          resizeTimer = window.setTimeout(function() {
+            window.dispatchEvent(new Event('resize'));
+          }, delay);
         };
 
         const observer = new ResizeObserver(function() {
-          sendSize();
+          if (isFullScreen) {
+            notifyPlotResize(80);
+          }
         });
 
         observer.observe(plotStage);
-        plotStage.dataset.resizeObserverAttached = '1';
-        sendSize();
+
+        document.addEventListener('bslib.card', function(event) {
+          const card = event.target;
+          if (!card || !card.contains(plotStage)) {
+            return;
+          }
+
+          isFullScreen = !!event.detail?.fullScreen;
+          notifyPlotResize(0);
+          notifyPlotResize(180);
+        }, true);
+
+        plotStage.dataset.fullScreenBridgeAttached = '1';
       }
 
       document.addEventListener('DOMContentLoaded', function() {
-        registerPlotStageObserver();
-        const mutationObserver = new MutationObserver(function() {
-          registerPlotStageObserver();
-        });
-        mutationObserver.observe(document.body, {childList: true, subtree: true});
+        registerPlotFullScreenBridge();
       });
 
       Shiny.addCustomMessageHandler('copy-text', function(message) {
+        const text = typeof message === 'string'
+          ? message
+          : (typeof message?.text === 'string'
+            ? message.text
+            : JSON.stringify(message, null, 2));
         if (navigator.clipboard && window.isSecureContext) {
-          navigator.clipboard.writeText(message.text);
+          navigator.clipboard.writeText(text);
           return;
         }
         const textArea = document.createElement('textarea');
-        textArea.value = message.text;
+        textArea.value = text;
         document.body.appendChild(textArea);
         textArea.focus();
         textArea.select();
@@ -780,7 +794,7 @@ server <- function(input, output, session) {
   })
 
   observeEvent(input$copy_request, {
-    session$sendCustomMessage("copy-text", list(text = request_json()))
+    session$sendCustomMessage("copy-text", as.character(request_json()))
     showNotification("Current request JSON copied.", type = "message", duration = 2)
   })
 
@@ -800,12 +814,9 @@ server <- function(input, output, session) {
     build_finance_plot(current_request(), context = runtime_context)
   },
   res = 110,
-  width = function() {
-    max(320, as.integer(input$plot_stage_width %||% 960L))
-  },
-  height = function() {
-    max(280, as.integer(input$plot_stage_height %||% 640L))
-  })
+  width = "auto",
+  height = "auto",
+  execOnResize = FALSE)
 
   output$request_preview <- renderText({
     request_json()
