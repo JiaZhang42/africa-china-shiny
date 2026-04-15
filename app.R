@@ -280,6 +280,7 @@ app_css <- "
 .app-card {height: 100%; display: flex; flex-direction: column;}
 .app-card > .card-body {flex: 1 1 auto; overflow: auto;}
 .request-json-pre pre {font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; white-space: pre-wrap; word-break: break-word; margin: 0;}
+.selectize-control.multi.group-copy-paste-enabled .selectize-input > div {user-select: text; -webkit-user-select: text; cursor: text;}
 .content-scroll {overflow-x: auto; overflow-y: visible;}
 .main-grid {display: grid; grid-template-columns: minmax(680px, 1fr) minmax(340px, 400px); gap: 1rem; align-items: start; min-width: 1040px;}
 .app-pane {display: flex; flex-direction: column; min-width: 0;}
@@ -308,6 +309,188 @@ ui <- page_sidebar(
   tags$head(
     tags$style(HTML(app_css)),
     tags$script(HTML("
+      function copyTextToClipboard(text) {
+        if (!text) {
+          return;
+        }
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(text);
+          return;
+        }
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+
+      function normalizeGroupToken(text) {
+        return (text || '')
+          .toString()
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\\u0300-\\u036f]/g, '')
+          .replace(/\\s+/g, ' ')
+          .replace(/[.,;:]+$/g, '')
+          .trim();
+      }
+
+      function buildGroupAliasMap(selectize) {
+        const aliasMap = new Map();
+        Object.entries(selectize.options || {}).forEach(([value, option]) => {
+          const labels = [value, option?.value, option?.text, option?.label];
+          labels.forEach((label) => {
+            const normalized = normalizeGroupToken(label);
+            if (normalized) {
+              aliasMap.set(normalized, value);
+            }
+          });
+
+          const text = option?.text || option?.label || '';
+          const withoutIso = text.replace(/\\s*\\([A-Z]{3}\\)\\s*$/i, '').trim();
+          const normalizedWithoutIso = normalizeGroupToken(withoutIso);
+          if (normalizedWithoutIso) {
+            aliasMap.set(normalizedWithoutIso, value);
+          }
+        });
+        return aliasMap;
+      }
+
+      function resolvePastedGroupValues(selectize, pastedText) {
+        const aliasMap = buildGroupAliasMap(selectize);
+        const optionIndex = Object.entries(selectize.options || {}).map(([value, option]) => {
+          const text = option?.text || option?.label || '';
+          const withoutIso = text.replace(/\\s*\\([A-Z]{3}\\)\\s*$/i, '').trim();
+          return {
+            value,
+            text: normalizeGroupToken(text),
+            withoutIso: normalizeGroupToken(withoutIso)
+          };
+        });
+        const matchedValues = [];
+        const pushMatch = function(value) {
+          if (value && !matchedValues.includes(value)) {
+            matchedValues.push(value);
+          }
+        };
+
+        const rawTokens = (pastedText || '')
+          .split(/[\\n\\r,;|\\t]+/)
+          .map((token) => token.trim())
+          .filter((token) => token.length > 0);
+
+        rawTokens.forEach((token) => {
+          const normalized = normalizeGroupToken(token);
+          if (aliasMap.has(normalized)) {
+            pushMatch(aliasMap.get(normalized));
+            return;
+          }
+
+          const stripped = normalizeGroupToken(token.replace(/^[-*•]+\\s*/, ''));
+          if (aliasMap.has(stripped)) {
+            pushMatch(aliasMap.get(stripped));
+            return;
+          }
+
+          const isoMatches = token.toUpperCase().match(/\\b[A-Z]{3}\\b/g) || [];
+          isoMatches.forEach((iso3) => {
+            const normalizedIso = normalizeGroupToken(iso3);
+            if (aliasMap.has(normalizedIso)) {
+              pushMatch(aliasMap.get(normalizedIso));
+            }
+          });
+
+          if (isoMatches.length > 0) {
+            return;
+          }
+
+          const partialMatches = optionIndex.filter((option) => {
+            return option.withoutIso && (
+              option.withoutIso.startsWith(stripped) ||
+              option.withoutIso.includes(stripped) ||
+              stripped.includes(option.withoutIso)
+            );
+          });
+
+          const uniquePartialMatches = Array.from(new Set(partialMatches.map((option) => option.value)));
+          if (uniquePartialMatches.length == 1) {
+            pushMatch(uniquePartialMatches[0]);
+          }
+        });
+
+        return matchedValues;
+      }
+
+      function enhanceGroupSelectize(selectize) {
+        if (!selectize || selectize.__groupCopyPasteEnhanced) {
+          return;
+        }
+
+        selectize.__groupCopyPasteEnhanced = true;
+        selectize.$wrapper.addClass('group-copy-paste-enabled');
+
+        const selectedLabels = function() {
+          return (selectize.items || [])
+            .map((value) => {
+              const option = selectize.options?.[value];
+              return option?.text || option?.label || value;
+            })
+            .join(', ');
+        };
+
+        selectize.$control.on('keydown.groupCopyPaste', function(event) {
+          const key = (event.key || '').toLowerCase();
+          if (!(event.ctrlKey || event.metaKey) || key !== 'c') {
+            return;
+          }
+
+          const currentSelection = window.getSelection ? window.getSelection().toString() : '';
+          if (currentSelection && currentSelection.trim().length > 0) {
+            return;
+          }
+
+          const text = selectedLabels();
+          if (!text) {
+            return;
+          }
+
+          event.preventDefault();
+          copyTextToClipboard(text);
+        });
+
+        selectize.$control_input.on('paste.groupCopyPaste', function(event) {
+          const originalEvent = event.originalEvent || event;
+          const pastedText = originalEvent.clipboardData?.getData('text') || '';
+          const matchedValues = resolvePastedGroupValues(selectize, pastedText);
+
+          if (matchedValues.length === 0) {
+            return;
+          }
+
+          event.preventDefault();
+          const merged = Array.from(new Set([...(selectize.items || []), ...matchedValues]));
+          selectize.setValue(merged);
+          selectize.clearTextbox();
+          selectize.close();
+        });
+      }
+
+      function registerGroupSelectizeCopyPaste() {
+        const selector = [
+          '[id^=\"custom_source_group_members_\"]',
+          '#individual_hosts',
+          '#custom_host_group_members'
+        ].join(',');
+
+        document.querySelectorAll(selector).forEach(function(element) {
+          if (element.selectize) {
+            enhanceGroupSelectize(element.selectize);
+          }
+        });
+      }
+
       function registerPlotFullScreenBridge() {
         const plotStage = document.getElementById('plot_stage');
         if (!plotStage || plotStage.dataset.fullScreenBridgeAttached === '1' || typeof ResizeObserver === 'undefined') {
@@ -348,6 +531,11 @@ ui <- page_sidebar(
 
       document.addEventListener('DOMContentLoaded', function() {
         registerPlotFullScreenBridge();
+        registerGroupSelectizeCopyPaste();
+        const mutationObserver = new MutationObserver(function() {
+          registerGroupSelectizeCopyPaste();
+        });
+        mutationObserver.observe(document.body, {childList: true, subtree: true});
       });
 
       Shiny.addCustomMessageHandler('copy-text', function(message) {
